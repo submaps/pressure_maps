@@ -15,20 +15,20 @@ def rename_ds(ds):
 
 def plot_basemap(lats, lons, p, rect, points=[]):
     max_lat, max_lon, min_lat, min_lon = rect
-    m = Basemap(projection='cyl', llcrnrlat=min_lat, llcrnrlon=min_lon, urcrnrlat=max_lat, urcrnrlon=max_lon)
-    # m = Basemap(projection='cyl', llcrnrlat=30, llcrnrlon=-30, urcrnrlat=77, urcrnrlon=60)
-    # m.drawcoastlines()
-    # m.bluemarble()
-    # m.drawparallels(np.array([-90, -45, 0, 45, 90]), labels=[1, 0, 0, 0])
-    # m.drawmeridians(np.array([0, 90, 180, 270, 360]), labels=[0, 0, 0, 1])
+    # m = Basemap(projection='cyl', llcrnrlat=min_lat, llcrnrlon=min_lon, urcrnrlat=max_lat, urcrnrlon=max_lon)
+    m = Basemap(projection='cyl', llcrnrlat=30, llcrnrlon=-30, urcrnrlat=77, urcrnrlon=60)
+    m.drawcoastlines()
+    m.bluemarble()
+    m.drawparallels(np.array([-90, -45, 0, 45, 90]), labels=[1, 0, 0, 0])
+    m.drawmeridians(np.array([0, 90, 180, 270, 360]), labels=[0, 0, 0, 1])
 
     if len(p) > 0:
         x, y = m(lons, lats)
         # p = p / 100
         m.pcolormesh(x, y, p)
         xx, yy = np.meshgrid(x, y)
-        # contour = m.contour(xx, yy, p, 30, colors='black', linewidths=0.2)
-        # plt.clabel(contour, inline=1, fontsize=10, fmt='%.1f')
+        contour = m.contour(xx, yy, p, 30, colors='black', linewidths=0.2)
+        plt.clabel(contour, inline=1, fontsize=10, fmt='%.1f')
 
     # m.scatter(min_lon, min_lat, color='red', marker='x')
     # m.scatter(max_lon, max_lat, color='red', marker='x')
