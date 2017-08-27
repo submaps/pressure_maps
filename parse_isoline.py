@@ -1,24 +1,27 @@
 import pandas as pd
 from geopy.distance import vincenty
 
-from example import plot_xyz, basemap_plot_xyz
-from first_flight import plot_basemap
+from plot_artist import plot_xyz, basemap_plot_xyz
 import numpy as np
-from scipy import interpolate
 
-# def sub_interpolate(z, x, y):
-#     x_ = np.arange(x.min(), x.max(), 0.01)
-#     y_ = np.arange(y.min(), y.max(), 0.01)
-#     xnew, ynew = np.meshgrid(x_, y_)
-#     f = interpolate.interp2d(x, y, z, kind='cubic')
-#     return f(x_, y_), x_, y_
 
+def get_nearest_ij(name, plat, plon, lats, lons):
+    ijd_list = []
+    for i, lat in enumerate(lats):
+        for j, lon in enumerate(lons):
+            d = vincenty((lat, lon), (plat, plon)).km
+            ijd_list.append([i, j, d])
+            if d < 0.5 and z[i, j] == 0:
+                print(name, plat, plon, d)
+                return i, j
+    i, j, d = min(ijd_list, key=lambda x: x[2])
+    return i, j
 
 if __name__ == '__main__':
     ifile = r'fromIsoline.csv'
     df = pd.read_csv(ifile, sep='\t')
-    lons_init = df['X'].values
-    lats_init = df['Y'].values
+    lons_init = df['Y'].values
+    lats_init = df['X'].values
     names = df['Номер'].values
     p_init = df['Забой'].values
     min_lon, max_lon = lons_init.min(), lons_init.max()
@@ -40,23 +43,14 @@ if __name__ == '__main__':
 
     z = np.zeros(x.shape)
     print(x.shape, y.shape, z.shape)
-    stations_list = []
-    for i, lat in enumerate(lats):
-        for j, lon in enumerate(lons):
-            for name, plat, plon, p in zip(names, lats, lons, p_init):
-                d = vincenty((lat, lon), (plat, plon)).km
-                print('\t\td=', d)
-                try:
-                    if d < 0.01 and z[i, j] == 0:
-                        # plot_points[name] = (lon, lat)
-                        z[i, j] = int(p)
-                        stations_list.append(name)
 
-                except:
-                    print('@@@@@@@@@@@@@@@@', i, j)
+    for name, plat, plon, p in zip(names, lats_init, lons_init, p_init):
+        try:
+            i, j = get_nearest_ij(name, plat, plon, lats, lons)
+            z[i, j] = int(p)
+            print('-'*10, p)
+        except TypeError as te:
+            print('@@@@@@@@', name, plat, plon)
 
-    # plot_points = [lats, lons, names]
-    print('missed stations: ', set(stations_list)-set(names))
     plot_points = [lats_init, lons_init, names]
     plot_xyz(x, y, z, xnew, ynew, plot_points)
-    # basemap_plot_xyz(x, y, z)
