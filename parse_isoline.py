@@ -27,6 +27,9 @@ if __name__ == '__main__':
     min_lon, max_lon = lons_init.min(), lons_init.max()
     min_lat, max_lat = lats_init.min(), lats_init.max()
 
+    max_lon += 0.025
+    max_lat += 0.025
+
     rect = max_lat, max_lon, min_lat, min_lon
     print(min_lon, min_lat)
     print(max_lon, max_lat)
@@ -53,4 +56,4 @@ if __name__ == '__main__':
             print('@@@@@@@@', name, plat, plon)
 
     plot_points = [lats_init, lons_init, names]
-    plot_xyz(x, y, z, xnew, ynew, plot_points)
+    plot_xyz(x, y, z, xnew, ynew, plot_points, rect)

@@ -4,11 +4,17 @@ from scipy import interpolate
 import matplotlib.pyplot as plt
 
 
-def plot_xyz(x, y, z, xnew, ynew, plot_points):
+def plot_xyz(x, y, z, xnew, ynew, plot_points, rect):
     plt.figure()
     pc = plt.pcolor(x, y, z)
     plt.contour(x, y, z)
     plt.colorbar(pc)
+    max_lat, max_lon, min_lat, min_lon = rect
+
+    plt.scatter([min_lat, max_lat], [min_lon, max_lon], marker='x', color='black')
+    plt.scatter([min_lat, min_lat], [max_lon, max_lon], marker='x', color='black')
+    plt.scatter([max_lat, min_lat], [max_lon, min_lon], marker='x', color='black')
+    plt.scatter([max_lat, min_lat], [min_lon, max_lon], marker='x', color='black')
 
     if plot_points:
         plt.scatter(plot_points[0], plot_points[1], marker='^', color='red')
