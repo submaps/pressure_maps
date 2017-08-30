@@ -16,22 +16,22 @@ def plot_xyz(x, y, z, xnew, ynew, plot_points, rect):
     plt.scatter([max_lat, min_lat], [max_lon, min_lon], marker='x', color='black')
     plt.scatter([max_lat, min_lat], [min_lon, max_lon], marker='x', color='black')
 
-    if plot_points:
-        plt.scatter(plot_points[0], plot_points[1], marker='^', color='red')
-        for lat, lon, name in zip(*plot_points):
-            plt.annotate(name, (lat, lon))
+    plt.scatter(plot_points[0], plot_points[1], marker='^', color='red')
+    for lat, lon, name in zip(*plot_points):
+        plt.annotate(name, (lat, lon))
 
     plt.title("Initial field")
     plt.savefig('img_00.png')
-    # plt.show()
 
+    # plt.show()
+    print('\tz.mean: ', z.mean())
     tck = interpolate.bisplrep(x, y, z, s=0.85)
     znew = interpolate.bisplev(xnew[:, 0], ynew[0, :], tck)
-
+    print('\tz.new.mean: ', znew.mean())
     plt.figure()
     pcmesh = plt.pcolormesh(xnew, ynew, znew, cmap='rainbow')
     contour = plt.contour(xnew, ynew, znew, 25, colors='black', linewidths=0.75)
-    plt.clabel(contour, inline=1, fontsize=10)
+    plt.clabel(contour, inline=1, fontsize=7)
 
     plt.colorbar(pcmesh)
     if plot_points:

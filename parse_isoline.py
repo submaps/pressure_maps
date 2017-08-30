@@ -1,5 +1,6 @@
 import pandas as pd
 from geopy.distance import vincenty
+from scipy import ndimage
 
 from plot_artist import plot_xyz, basemap_plot_xyz
 import numpy as np
@@ -18,7 +19,7 @@ def get_nearest_ij(name, plat, plon, lats, lons):
     return i, j
 
 if __name__ == '__main__':
-    ifile = r'fromIsoline.csv'
+    ifile = r'fromIsoline_boreholes.csv'
     df = pd.read_csv(ifile, sep='\t')
     lons_init = df['Y'].values
     lats_init = df['X'].values
@@ -45,6 +46,7 @@ if __name__ == '__main__':
     xnew, ynew = np.mgrid[min_lat:max_lat:sstep, min_lon:max_lon:sstep]
 
     z = np.zeros(x.shape)
+    # z = np.full(x.shape, p_init.mean())
     print(x.shape, y.shape, z.shape)
 
     for name, plat, plon, p in zip(names, lats_init, lons_init, p_init):
@@ -55,5 +57,6 @@ if __name__ == '__main__':
         except TypeError as te:
             print('@@@@@@@@', name, plat, plon)
 
+    # z = ndimage.gaussian_filter(z, sigma=0.1)
     plot_points = [lats_init, lons_init, names]
     plot_xyz(x, y, z, xnew, ynew, plot_points, rect)
