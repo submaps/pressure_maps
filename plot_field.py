@@ -6,7 +6,8 @@ import numpy as np
 def plot_field(x, y, z, lons, lats, names, lons_labels, lats_labels):
     plt.figure()
     pc = plt.pcolor(x, y, z)
-    c = plt.contour(x, y, z, 15, linewidths=0.75)
+    # pc = plt.pcolor(x, y, z, cmap='RdYlBu')
+    c = plt.contour(x, y, z, 15, linewidths=0.75, colors='black')
     plt.clabel(c, inline=1, fontsize=7, fmt='%.1f')
     plt.colorbar(pc)
     plt.scatter(lons, lats, marker='^', color='red', zorder=100)
@@ -44,10 +45,13 @@ if __name__ == '__main__':
     lats_init = df_bore['Y'].values
     names = df_bore['Номер'].values
 
-    xnew = np.linspace(x.min(), x.max(), 441)
-    ynew = np.linspace(y.min(), y.max(), 437)
+    # xnew = np.linspace(x.min(), x.max(), 441)
+    # ynew = np.linspace(y.min(), y.max(), 437)
+
+    xnew, ynew = sorted(set(y.values)), sorted(set(x.values))
+
     xnew, ynew = np.meshgrid(xnew, ynew)
-    znew = np.reshape(z, (-1, 437)).T
+    znew = np.reshape(z, (-1, len(ynew))).T
 
     xh = xnew.max() - xnew.min()
     yh = ynew.max() - ynew.min()
